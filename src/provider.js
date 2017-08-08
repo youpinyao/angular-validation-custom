@@ -89,7 +89,7 @@
     };
 
     /**
-     * Get the valid method     
+     * Get the valid method
      * @returns {*}
      */
     this.getValidMethod = function() {
@@ -210,12 +210,28 @@
       };
 
       $timeout(function() {
+        updateValid(form);
+
         if (_this.checkValid(form)) {
           deferred.resolve('success');
         } else {
           deferred.reject('error');
         }
       });
+
+      function updateValid(form) {
+        var valid = true;
+
+        for (var i in form) {
+          if (form[i] && form[i].$$parentForm) {
+            if (form[i].$valid === false) {
+              valid = false;
+            }
+          }
+        }
+
+        form.$valid = valid;
+      }
 
       return deferred.promise;
     };
@@ -265,7 +281,7 @@
 
     /**
      * Add Message Element in config phase
-     * When you need custom your messageElement 
+     * When you need custom your messageElement
      * NODE: this funtion & and `message-id` attribute, have similar purpose.
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element
@@ -276,7 +292,7 @@
 
     /**
      * Add Message Element in config phase
-     * When you need custom your messageElement 
+     * When you need custom your messageElement
      * NODE: this funtion & and `message-id` attribute, have similar purpose.
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element

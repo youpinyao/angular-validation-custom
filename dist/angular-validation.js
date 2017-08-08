@@ -2,7 +2,7 @@ angular.module('validation', ['validation.provider', 'validation.directive']);
 angular.module('validation.provider', []);
 angular.module('validation.directive', ['validation.provider']);
 
-(function() {
+(function () {
   angular
     .module('validation.provider')
     .provider('$validation', Provider);
@@ -19,7 +19,7 @@ angular.module('validation.directive', ['validation.provider']);
      * Setup the provider
      * @param injector
      */
-    var setup = function(injector) {
+    var setup = function (injector) {
       $injector = injector;
       $scope = $injector.get('$rootScope');
       $http = $injector.get('$http');
@@ -50,7 +50,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param obj
      * @returns {*}
      */
-    this.setExpression = function(obj) {
+    this.setExpression = function (obj) {
       angular.extend(expression, obj);
       return _this;
     };
@@ -60,7 +60,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param exprs
      * @returns {*}
      */
-    this.getExpression = function(exprs) {
+    this.getExpression = function (exprs) {
       return expression[exprs];
     };
 
@@ -69,7 +69,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param obj
      * @returns {*}
      */
-    this.setDefaultMsg = function(obj) {
+    this.setDefaultMsg = function (obj) {
       angular.extend(defaultMsg, obj);
       return _this;
     };
@@ -79,7 +79,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param msg
      * @returns {*}
      */
-    this.getDefaultMsg = function(msg) {
+    this.getDefaultMsg = function (msg) {
       return defaultMsg[msg];
     };
 
@@ -88,7 +88,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param v
      * @returns {*}
      */
-    this.setValidMethod = function(v) {
+    this.setValidMethod = function (v) {
       validMethod = v;
     };
 
@@ -96,7 +96,7 @@ angular.module('validation.directive', ['validation.provider']);
      * Get the valid method
      * @returns {*}
      */
-    this.getValidMethod = function() {
+    this.getValidMethod = function () {
       return validMethod;
     };
 
@@ -105,7 +105,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param func
      * @returns {*}
      */
-    this.setErrorHTML = function(func) {
+    this.setErrorHTML = function (func) {
       if (func.constructor !== Function) {
         return;
       }
@@ -118,7 +118,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param message
      * @returns {string}
      */
-    this.getErrorHTML = function(message) {
+    this.getErrorHTML = function (message) {
       return '<p class="validation-invalid">' + message + '</p>';
     };
 
@@ -127,7 +127,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param func
      * @returns {*}
      */
-    this.setSuccessHTML = function(func) {
+    this.setSuccessHTML = function (func) {
       if (func.constructor !== Function) {
         return;
       }
@@ -140,7 +140,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param message
      * @returns {string}
      */
-    this.getSuccessHTML = function(message) {
+    this.getSuccessHTML = function (message) {
       return '<p class="validation-valid">' + message + '</p>';
     };
 
@@ -166,7 +166,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param form
      * @returns {boolean}
      */
-    this.checkValid = function(form) {
+    this.checkValid = function (form) {
       return !!(form && form.$valid);
     };
 
@@ -175,7 +175,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param form
      * @returns {promise|*}
      */
-    this.validate = function(form) {
+    this.validate = function (form) {
       var deferred = $q.defer();
       var idx = 0;
 
@@ -199,27 +199,43 @@ angular.module('validation.directive', ['validation.provider']);
         }
       }
 
-      deferred.promise.success = function(fn) {
-        deferred.promise.then(function(value) {
+      deferred.promise.success = function (fn) {
+        deferred.promise.then(function (value) {
           fn(value);
         });
         return deferred.promise;
       };
 
-      deferred.promise.error = function(fn) {
-        deferred.promise.then(null, function(value) {
+      deferred.promise.error = function (fn) {
+        deferred.promise.then(null, function (value) {
           fn(value);
         });
         return deferred.promise;
       };
 
-      $timeout(function() {
+      $timeout(function () {
+        updateValid(form);
+
         if (_this.checkValid(form)) {
           deferred.resolve('success');
         } else {
           deferred.reject('error');
         }
       });
+
+      function updateValid(form) {
+        var valid = true;
+
+        for (var i in form) {
+          if (form[i] && form[i].$$parentForm) {
+            if (form[i].$valid === false) {
+              valid = false;
+            }
+          }
+        }
+
+        form.$valid = valid;
+      }
 
       return deferred.promise;
     };
@@ -246,7 +262,7 @@ angular.module('validation.directive', ['validation.provider']);
      * reset the specific form
      * @param form
      */
-    this.reset = function(form) {
+    this.reset = function (form) {
       if (form === undefined) {
         console.error('This is not a regular Form name scope');
         return;
@@ -274,7 +290,7 @@ angular.module('validation.directive', ['validation.provider']);
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element
      */
-    this.addMsgElement = function(element) {
+    this.addMsgElement = function (element) {
       return element.after('<span></span>');
     };
 
@@ -285,7 +301,7 @@ angular.module('validation.directive', ['validation.provider']);
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element
      */
-    this.getMsgElement = function(element) {
+    this.getMsgElement = function (element) {
       return element.next();
     };
 
@@ -293,7 +309,7 @@ angular.module('validation.directive', ['validation.provider']);
      * $get
      * @returns {{setErrorHTML: *, getErrorHTML: Function, setSuccessHTML: *, getSuccessHTML: Function, setExpression: *, getExpression: Function, setDefaultMsg: *, getDefaultMsg: Function, checkValid: Function, validate: Function, reset: Function}}
      */
-    this.$get = ['$injector', function($injector) {
+    this.$get = ['$injector', function ($injector) {
       setup($injector);
       return {
         setValidMethod: this.setValidMethod,
@@ -321,7 +337,7 @@ angular.module('validation.directive', ['validation.provider']);
   }
 }).call(this);
 
-(function() {
+(function () {
   angular
     .module('validation.directive')
     .directive('validationReset', Reset);
@@ -333,8 +349,8 @@ angular.module('validation.directive', ['validation.provider']);
     return {
       link: function postLink(scope, element, attrs) {
         var form = $parse(attrs.validationReset)(scope);
-        $timeout(function() {
-          element.on('click', function(e) {
+        $timeout(function () {
+          element.on('click', function (e) {
             e.preventDefault();
             $validationProvider.reset(form);
           });
@@ -345,7 +361,7 @@ angular.module('validation.directive', ['validation.provider']);
   Reset.$inject = ['$injector'];
 }).call(this);
 
-(function() {
+(function () {
   angular
     .module('validation.directive')
     .directive('validationSubmit', Submit);
@@ -359,13 +375,13 @@ angular.module('validation.directive', ['validation.provider']);
       require: '?ngClick',
       link: function postLink(scope, element, attrs) {
         var form = $parse(attrs.validationSubmit)(scope);
-        $timeout(function() {
+        $timeout(function () {
           // Disable ng-click event propagation
           element.off('click');
-          element.on('click', function(e) {
+          element.on('click', function (e) {
             e.preventDefault();
             $validationProvider.validate(form)
-              .success(function() {
+              .success(function () {
                 $parse(attrs.ngClick)(scope);
               });
           });
@@ -376,7 +392,7 @@ angular.module('validation.directive', ['validation.provider']);
   Submit.$inject = ['$injector'];
 }).call(this);
 
-(function() {
+(function () {
   angular
     .module('validation.directive')
     .directive('validator', Validator);
@@ -398,7 +414,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param ctrl
      * @returns {}
      */
-    var validFunc = function(element, validMessage, validation, scope, ctrl, attrs, param) {
+    var validFunc = function (element, validMessage, validation, scope, ctrl, attrs, param) {
       var messageToShow = validMessage || $validationProvider.getDefaultMsg(validation).success;
       var validCallback = $parse(attrs.validCallback);
       var messageId = attrs.messageId;
@@ -441,7 +457,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param ctrl
      * @returns {}
      */
-    var invalidFunc = function(element, validMessage, validation, scope, ctrl, attrs, param) {
+    var invalidFunc = function (element, validMessage, validation, scope, ctrl, attrs, param) {
       var messageToShow = validMessage || $validationProvider.getDefaultMsg(validation).error;
       var invalidCallback = $parse(attrs.invalidCallback);
       var messageId = attrs.messageId;
@@ -481,10 +497,10 @@ angular.module('validation.directive', ['validation.provider']);
      * @param validationGroup
      * @return {boolean}
      */
-    var checkValidationGroup = function(validationGroup) {
+    var checkValidationGroup = function (validationGroup) {
       var group = groups[validationGroup];
 
-      return Object.keys(group).some(function(key) {
+      return Object.keys(group).some(function (key) {
         return group[key];
       });
     };
@@ -553,7 +569,7 @@ angular.module('validation.directive', ['validation.provider']);
      * @param value
      * @returns {}
      */
-    var checkValidation = function(scope, element, attrs, ctrl, validation, value) {
+    var checkValidation = function (scope, element, attrs, ctrl, validation, value) {
       var validators = validation.slice(0);
       var validatorExpr = validators[0].trim();
       var paramIndex = validatorExpr.indexOf('=');
@@ -565,7 +581,7 @@ angular.module('validation.directive', ['validation.provider']);
       var expression = $validationProvider.getExpression(validator);
       var validationGroup = attrs.validationGroup;
       var valid = {
-        success: function(message) {
+        success: function (message) {
           validFunc(element, message || attrs[successMessage], validator, scope, ctrl,
             attrs, validatorParam);
           if (leftValidation.length) {
@@ -574,7 +590,7 @@ angular.module('validation.directive', ['validation.provider']);
             return true;
           }
         },
-        error: function(message) {
+        error: function (message) {
           return invalidFunc(element, message || attrs[errorMessage], validator, scope,
             ctrl, attrs, validatorParam);
         }
@@ -590,7 +606,7 @@ angular.module('validation.directive', ['validation.provider']);
       if (expression.constructor === Function) {
         return $q.all([$validationProvider.getExpression(validator)(value, scope, element,
             attrs, validatorParam)])
-          .then(function(data) {
+          .then(function (data) {
             var resultObj = getResultObj(data);
             var message = resultObj.message;
             if (resultObj.result) {
@@ -611,7 +627,7 @@ angular.module('validation.directive', ['validation.provider']);
                 return valid.error(message);
               }
             } else return valid.error(message);
-          }, function() {
+          }, function () {
             return valid.error();
           });
       }
@@ -645,10 +661,10 @@ angular.module('validation.directive', ['validation.provider']);
     /**
      * generate unique guid
      */
-    var s4 = function() {
+    var s4 = function () {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
-    var guid = function() {
+    var guid = function () {
       return (s4() + s4() + s4() + s4());
     };
 
@@ -656,7 +672,7 @@ angular.module('validation.directive', ['validation.provider']);
     return {
       restrict: 'A',
       require: 'ngModel',
-      link: function(scope, element, attrs, ctrl) {
+      link: function (scope, element, attrs, ctrl) {
         /**
          * All attributes
          */
@@ -683,7 +699,7 @@ angular.module('validation.directive', ['validation.provider']);
          *
          * use watch() to destroy the $watch method
          */
-        var watch = function() {};
+        var watch = function () {};
 
         /**
          * validator
@@ -714,7 +730,7 @@ angular.module('validation.directive', ['validation.provider']);
         /**
          * Observe validator changes in order to allow dynamically change it
          */
-        attrs.$observe('validator', function(value) {
+        attrs.$observe('validator', function (value) {
           validation = value.split(',');
         });
 
@@ -740,7 +756,7 @@ angular.module('validation.directive', ['validation.provider']);
         /**
          * Reset the validation for specific form
          */
-        scope.$on(ctrl.$name + 'reset-' + uid, function() {
+        scope.$on(ctrl.$name + 'reset-' + uid, function () {
           /**
            * clear scope.$watch here
            * when reset status
@@ -749,7 +765,7 @@ angular.module('validation.directive', ['validation.provider']);
            */
           watch();
 
-          $timeout(function() {
+          $timeout(function () {
             ctrl.$setViewValue(originalViewValue);
             ctrl.$setPristine();
             ctrl.$setValidity(ctrl.$name, undefined);
@@ -772,7 +788,7 @@ angular.module('validation.directive', ['validation.provider']);
         /**
          * Click submit form, check the validity when submit
          */
-        scope.$on(ctrl.$name + 'submit-' + uid, function(event, index) {
+        scope.$on(ctrl.$name + 'submit-' + uid, function (event, index) {
           var value = useViewValue ? ctrl.$viewValue : ctrl.$modelValue;
           var isValid = false;
 
@@ -781,9 +797,9 @@ angular.module('validation.directive', ['validation.provider']);
           if (validMethod === 'submit') {
             // clear previous scope.$watch
             watch();
-            watch = scope.$watch(function() {
+            watch = scope.$watch(function () {
               return scope.$eval(ngModel);
-            }, function(value, oldValue) {
+            }, function (value, oldValue) {
               // don't watch when init
               if (value === oldValue) {
                 return;
@@ -800,13 +816,13 @@ angular.module('validation.directive', ['validation.provider']);
             });
           }
 
-          var setFocus = function(isValid) {
+          var setFocus = function (isValid) {
             if (isValid) {
               delete focusElements[index];
             } else {
               focusElements[index] = element[0];
 
-              $timeout(function() {
+              $timeout(function () {
                 focusElements[Math.min.apply(null, Object.keys(focusElements))].focus();
               }, 0);
             }
@@ -820,11 +836,11 @@ angular.module('validation.directive', ['validation.provider']);
          * Validate blur method
          */
         if (validMethod === 'blur') {
-          element.bind('blur', function() {
+          element.bind('blur', function () {
             var value = scope.$eval(ngModel);
 
             if (scope.$root.$$phase !== '$apply') {
-              scope.$apply(function() {
+              scope.$apply(function () {
                 checkValidation(scope, element, attrs, ctrl, validation, value);
               });
             } else {
@@ -846,9 +862,9 @@ angular.module('validation.directive', ['validation.provider']);
          * Validate watch method
          * This is the default method
          */
-        scope.$watch(function() {
+        scope.$watch(function () {
           return scope.$eval(ngModel);
-        }, function(value) {
+        }, function (value) {
           /**
            * dirty, pristine, viewValue control here
            */
@@ -866,11 +882,11 @@ angular.module('validation.directive', ['validation.provider']);
           checkValidation(scope, element, attrs, ctrl, validation, value);
         });
 
-        $timeout(function() {
+        $timeout(function () {
           /**
            * Don't showup the validation Message
            */
-          attrs.$observe('noValidationMessage', function(value) {
+          attrs.$observe('noValidationMessage', function (value) {
             var el;
             if (messageId || validationGroup) el = angular.element(document.querySelector(
               '#' + (messageId || validationGroup)));
