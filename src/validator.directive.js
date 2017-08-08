@@ -1,4 +1,4 @@
-(function() {
+(function () {
   angular
     .module('validation.directive')
     .directive('validator', Validator);
@@ -20,7 +20,7 @@
      * @param ctrl
      * @returns {}
      */
-    var validFunc = function(element, validMessage, validation, scope, ctrl, attrs, param) {
+    var validFunc = function (element, validMessage, validation, scope, ctrl, attrs, param) {
       var messageToShow = validMessage || $validationProvider.getDefaultMsg(validation).success;
       var validCallback = $parse(attrs.validCallback);
       var messageId = attrs.messageId;
@@ -60,7 +60,7 @@
      * @param ctrl
      * @returns {}
      */
-    var invalidFunc = function(element, validMessage, validation, scope, ctrl, attrs, param) {
+    var invalidFunc = function (element, validMessage, validation, scope, ctrl, attrs, param) {
       var messageToShow = validMessage || $validationProvider.getDefaultMsg(validation).error;
       var invalidCallback = $parse(attrs.invalidCallback);
       var messageId = attrs.messageId;
@@ -97,10 +97,10 @@
      * @param validationGroup
      * @return {boolean}
      */
-    var checkValidationGroup = function(validationGroup) {
+    var checkValidationGroup = function (validationGroup) {
       var group = groups[validationGroup];
 
-      return Object.keys(group).some(function(key) {
+      return Object.keys(group).some(function (key) {
         return group[key];
       });
     };
@@ -168,7 +168,7 @@
      * @param value
      * @returns {}
      */
-    var checkValidation = function(scope, element, attrs, ctrl, validation, value) {
+    var checkValidation = function (scope, element, attrs, ctrl, validation, value) {
       var validators = validation.slice(0);
       var validatorExpr = validators[0].trim();
       var paramIndex = validatorExpr.indexOf('=');
@@ -180,7 +180,7 @@
       var expression = $validationProvider.getExpression(validator);
       var validationGroup = attrs.validationGroup;
       var valid = {
-        success: function(message) {
+        success: function (message) {
           validFunc(element, message || attrs[successMessage], validator, scope, ctrl, attrs, validatorParam);
           if (leftValidation.length) {
             return checkValidation(scope, element, attrs, ctrl, leftValidation, value);
@@ -188,7 +188,7 @@
             return true;
           }
         },
-        error: function(message) {
+        error: function (message) {
           return invalidFunc(element, message || attrs[errorMessage], validator, scope, ctrl, attrs, validatorParam);
         }
       };
@@ -201,7 +201,7 @@
       // Check with Function
       if (expression.constructor === Function) {
         return $q.all([$validationProvider.getExpression(validator)(value, scope, element, attrs, validatorParam)])
-          .then(function(data) {
+          .then(function (data) {
             var resultObj = getResultObj(data);
             var message = resultObj.message;
             if (resultObj.result) {
@@ -222,7 +222,7 @@
                 return valid.error(message);
               }
             } else return valid.error(message);
-          }, function() {
+          }, function () {
             return valid.error();
           });
       }
@@ -256,10 +256,10 @@
     /**
      * generate unique guid
      */
-    var s4 = function() {
+    var s4 = function () {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
-    var guid = function() {
+    var guid = function () {
       return (s4() + s4() + s4() + s4());
     };
 
@@ -267,7 +267,7 @@
     return {
       restrict: 'A',
       require: 'ngModel',
-      link: function(scope, element, attrs, ctrl) {
+      link: function (scope, element, attrs, ctrl) {
         /**
          * All attributes
          */
@@ -278,6 +278,14 @@
         var validMethod = attrs.validMethod;
         var ngModel = attrs.ngModel;
 
+        for (var i in scope) {
+          if (scope[i] && scope[i].$$parentForm) {
+            if (scope.$parent) {
+              scope.$parent[i] = scope[i];
+            }
+          }
+        }
+
         /**
          * watch
          * @type {watch}
@@ -286,7 +294,7 @@
          *
          * use watch() to destroy the $watch method
          */
-        var watch = function() {};
+        var watch = function () {};
 
         /**
          * validator
@@ -317,7 +325,7 @@
         /**
          * Observe validator changes in order to allow dynamically change it
          */
-        attrs.$observe('validator', function(value) {
+        attrs.$observe('validator', function (value) {
           validation = value.split(',');
         });
 
@@ -343,7 +351,7 @@
         /**
          * Reset the validation for specific form
          */
-        scope.$on(ctrl.$name + 'reset-' + uid, function() {
+        scope.$on(ctrl.$name + 'reset-' + uid, function () {
           /**
            * clear scope.$watch here
            * when reset status
@@ -352,7 +360,7 @@
            */
           watch();
 
-          $timeout(function() {
+          $timeout(function () {
             ctrl.$setViewValue(originalViewValue);
             ctrl.$setPristine();
             ctrl.$setValidity(ctrl.$name, undefined);
@@ -372,7 +380,7 @@
         /**
          * Click submit form, check the validity when submit
          */
-        scope.$on(ctrl.$name + 'submit-' + uid, function(event, index) {
+        scope.$on(ctrl.$name + 'submit-' + uid, function (event, index) {
           var value = useViewValue ? ctrl.$viewValue : ctrl.$modelValue;
           var isValid = false;
 
@@ -381,9 +389,9 @@
           if (validMethod === 'submit') {
             // clear previous scope.$watch
             watch();
-            watch = scope.$watch(function() {
+            watch = scope.$watch(function () {
               return scope.$eval(ngModel);
-            }, function(value, oldValue) {
+            }, function (value, oldValue) {
               // don't watch when init
               if (value === oldValue) {
                 return;
@@ -400,13 +408,13 @@
             });
           }
 
-          var setFocus = function(isValid) {
+          var setFocus = function (isValid) {
             if (isValid) {
               delete focusElements[index];
             } else {
               focusElements[index] = element[0];
 
-              $timeout(function() {
+              $timeout(function () {
                 focusElements[Math.min.apply(null, Object.keys(focusElements))].focus();
               }, 0);
             }
@@ -420,11 +428,11 @@
          * Validate blur method
          */
         if (validMethod === 'blur') {
-          element.bind('blur', function() {
+          element.bind('blur', function () {
             var value = scope.$eval(ngModel);
 
             if (scope.$root.$$phase !== '$apply') {
-              scope.$apply(function() {
+              scope.$apply(function () {
                 checkValidation(scope, element, attrs, ctrl, validation, value);
               });
             } else {
@@ -446,9 +454,9 @@
          * Validate watch method
          * This is the default method
          */
-        scope.$watch(function() {
+        scope.$watch(function () {
           return scope.$eval(ngModel);
-        }, function(value) {
+        }, function (value) {
           /**
            * dirty, pristine, viewValue control here
            */
@@ -465,11 +473,11 @@
           checkValidation(scope, element, attrs, ctrl, validation, value);
         });
 
-        $timeout(function() {
+        $timeout(function () {
           /**
            * Don't showup the validation Message
            */
-          attrs.$observe('noValidationMessage', function(value) {
+          attrs.$observe('noValidationMessage', function (value) {
             var el;
             if (messageId || validationGroup) el = angular.element(document.querySelector('#' + (messageId || validationGroup)));
             else el = $validationProvider.getMsgElement(element);

@@ -4,7 +4,7 @@
   "description": "Client-side Validation for AngularJS (改了form 的作用域，如果在ng-if 使用，会把form赋值到parent)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/huei90/angular-validation"
+    "url": "git+https://github.com/huei90/angular-validation.git"
   },
   "homepage": "http://huei90.github.io/angular-validation/",
   "scripts": {
@@ -12,11 +12,7 @@
     "build": "grunt build",
     "development": "grunt dev"
   },
-  "author": {
-    "name": "Huei Tan",
-    "email": "huei90@gmail.com",
-    "url": "https://github.com/huei90"
-  },
+  "author": "youpinyao <497400448@qq.com> (https://github.com/youpinyao)",
   "license": "MIT",
   "keywords": [
     "angular",
@@ -27,7 +23,9 @@
     "client-side"
   ],
   "main": "./dist/angular-validation.js",
-  "bugs": "https://github.com/huei90/angular-validation/issues",
+  "bugs": {
+    "url": "https://github.com/huei90/angular-validation/issues"
+  },
   "devDependencies": {
     "babel-core": "^6.7.7",
     "babel-loader": "^6.2.4",
@@ -60,5 +58,8 @@
   },
   "dependencies": {
     "webpack": "^1.13.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }
