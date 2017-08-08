@@ -93,7 +93,7 @@ angular.module('validation.directive', ['validation.provider']);
     };
 
     /**
-     * Get the valid method     
+     * Get the valid method
      * @returns {*}
      */
     this.getValidMethod = function() {
@@ -269,7 +269,7 @@ angular.module('validation.directive', ['validation.provider']);
 
     /**
      * Add Message Element in config phase
-     * When you need custom your messageElement 
+     * When you need custom your messageElement
      * NODE: this funtion & and `message-id` attribute, have similar purpose.
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element
@@ -280,7 +280,7 @@ angular.module('validation.directive', ['validation.provider']);
 
     /**
      * Add Message Element in config phase
-     * When you need custom your messageElement 
+     * When you need custom your messageElement
      * NODE: this funtion & and `message-id` attribute, have similar purpose.
      * This function will help you add your `messageElement` automatically instead of pre-defined.
      * @param element
@@ -405,15 +405,18 @@ angular.module('validation.directive', ['validation.provider']);
       var validationGroup = attrs.validationGroup;
       var messageElem;
 
-      if (messageId || validationGroup) messageElem = angular.element(document.querySelector('#' + (messageId || validationGroup)));
+      if (messageId || validationGroup) messageElem = angular.element(document.querySelector(
+        '#' + (messageId || validationGroup)));
       else messageElem = $validationProvider.getMsgElement(element);
 
       if (element.attr('no-validation-message')) {
         messageElem.css('display', 'none');
       } else if ($validationProvider.showSuccessMessage && messageToShow) {
-        messageToShow = angular.isFunction(messageToShow) ? messageToShow(element, attrs, param) : messageToShow;
+        messageToShow = angular.isFunction(messageToShow) ? messageToShow(element, attrs, param) :
+          messageToShow;
 
-        messageElem.html('').append($compile($validationProvider.getSuccessHTML(messageToShow, element, attrs))(scope));
+        messageElem.html('').append($compile($validationProvider.getSuccessHTML(messageToShow,
+          element, attrs))(scope));
         messageElem.css('display', '');
       } else {
         messageElem.css('display', 'none');
@@ -445,15 +448,18 @@ angular.module('validation.directive', ['validation.provider']);
       var validationGroup = attrs.validationGroup;
       var messageElem;
 
-      if (messageId || validationGroup) messageElem = angular.element(document.querySelector('#' + (messageId || validationGroup)));
+      if (messageId || validationGroup) messageElem = angular.element(document.querySelector(
+        '#' + (messageId || validationGroup)));
       else messageElem = $validationProvider.getMsgElement(element);
 
       if (element.attr('no-validation-message')) {
         messageElem.css('display', 'none');
       } else if ($validationProvider.showErrorMessage && messageToShow) {
-        messageToShow = angular.isFunction(messageToShow) ? messageToShow(element, attrs, param) : messageToShow;
+        messageToShow = angular.isFunction(messageToShow) ? messageToShow(element, attrs, param) :
+          messageToShow;
 
-        messageElem.html('').append($compile($validationProvider.getErrorHTML(messageToShow, element, attrs))(scope));
+        messageElem.html('').append($compile($validationProvider.getErrorHTML(messageToShow,
+          element, attrs))(scope));
         messageElem.css('display', '');
       } else {
         messageElem.css('display', 'none');
@@ -491,7 +497,8 @@ angular.module('validation.directive', ['validation.provider']);
      * @param validity
      */
     function setValidationGroup(scope, validationGroup, validity) {
-      var validationGroupElems = document.querySelectorAll('*[validation-group=' + validationGroup + ']');
+      var validationGroupElems = document.querySelectorAll('*[validation-group=' +
+        validationGroup + ']');
 
       // Loop through all elements inside the group
       for (var i = 0, len = validationGroupElems.length; i < len; i++) {
@@ -559,7 +566,8 @@ angular.module('validation.directive', ['validation.provider']);
       var validationGroup = attrs.validationGroup;
       var valid = {
         success: function(message) {
-          validFunc(element, message || attrs[successMessage], validator, scope, ctrl, attrs, validatorParam);
+          validFunc(element, message || attrs[successMessage], validator, scope, ctrl,
+            attrs, validatorParam);
           if (leftValidation.length) {
             return checkValidation(scope, element, attrs, ctrl, leftValidation, value);
           } else {
@@ -567,18 +575,21 @@ angular.module('validation.directive', ['validation.provider']);
           }
         },
         error: function(message) {
-          return invalidFunc(element, message || attrs[errorMessage], validator, scope, ctrl, attrs, validatorParam);
+          return invalidFunc(element, message || attrs[errorMessage], validator, scope,
+            ctrl, attrs, validatorParam);
         }
       };
 
       if (expression === undefined) {
         console.error('You are using undefined validator "%s"', validator);
-        if (leftValidation.length) return checkValidation(scope, element, attrs, ctrl, leftValidation, value);
+        if (leftValidation.length) return checkValidation(scope, element, attrs, ctrl,
+          leftValidation, value);
         else return;
       }
       // Check with Function
       if (expression.constructor === Function) {
-        return $q.all([$validationProvider.getExpression(validator)(value, scope, element, attrs, validatorParam)])
+        return $q.all([$validationProvider.getExpression(validator)(value, scope, element,
+            attrs, validatorParam)])
           .then(function(data) {
             var resultObj = getResultObj(data);
             var message = resultObj.message;
@@ -655,6 +666,14 @@ angular.module('validation.directive', ['validation.provider']);
         var validationGroup = attrs.validationGroup;
         var validMethod = attrs.validMethod;
         var ngModel = attrs.ngModel;
+
+        for (var i in scope) {
+          if (scope[i] && scope[i].$$parentForm) {
+            if (scope.$parent) {
+              scope.$parent[i] = scope[i];
+            }
+          }
+        }
 
         /**
          * watch
@@ -735,17 +754,20 @@ angular.module('validation.directive', ['validation.provider']);
             ctrl.$setPristine();
             ctrl.$setValidity(ctrl.$name, undefined);
             ctrl.$render();
-            if (messageId || validationGroup) angular.element(document.querySelector('#' + (messageId || validationGroup))).html('');
+            if (messageId || validationGroup) angular.element(document.querySelector(
+              '#' + (messageId || validationGroup))).html('');
             else $validationProvider.getMsgElement(element).html('');
 
-            if ($validationProvider.resetCallback) $validationProvider.resetCallback(element);
+            if ($validationProvider.resetCallback) $validationProvider.resetCallback(
+              element);
           });
         });
 
         /**
          * Check validator
          */
-        validMethod = (angular.isUndefined(validMethod)) ? $validationProvider.getValidMethod() : validMethod;
+        validMethod = (angular.isUndefined(validMethod)) ? $validationProvider.getValidMethod() :
+          validMethod;
 
         /**
          * Click submit form, check the validity when submit
@@ -790,7 +812,7 @@ angular.module('validation.directive', ['validation.provider']);
             }
           };
 
-          if (isValid instanceof Object) isValid.then(setFocus);
+          if (isValid.constructor === Object) isValid.then(setFocus);
           else setFocus(isValid);
         });
 
@@ -836,7 +858,8 @@ angular.module('validation.directive', ['validation.provider']);
             ctrl.$setViewValue(ctrl.$viewValue);
           } else if (ctrl.$pristine) {
             // Don't validate form when the input is clean(pristine)
-            if (messageId || validationGroup) angular.element(document.querySelector('#' + (messageId || validationGroup))).html('');
+            if (messageId || validationGroup) angular.element(document.querySelector('#' +
+              (messageId || validationGroup))).html('');
             else $validationProvider.getMsgElement(element).html('');
             return;
           }
@@ -849,7 +872,8 @@ angular.module('validation.directive', ['validation.provider']);
            */
           attrs.$observe('noValidationMessage', function(value) {
             var el;
-            if (messageId || validationGroup) el = angular.element(document.querySelector('#' + (messageId || validationGroup)));
+            if (messageId || validationGroup) el = angular.element(document.querySelector(
+              '#' + (messageId || validationGroup)));
             else el = $validationProvider.getMsgElement(element);
             if (value === 'true' || value === true) el.css('display', 'none');
             else if (value === 'false' || value === false) el.css('display', 'block');

@@ -1,7 +1,7 @@
 {
-  "name": "angular-validation",
+  "name": "angular-validation-custom",
   "version": "1.4.4",
-  "description": "Client-side Validation for AngularJS",
+  "description": "Client-side Validation for AngularJS (改了form 的作用域，如果在ng-if 使用，会把form赋值到parent)",
   "repository": {
     "type": "git",
     "url": "https://github.com/huei90/angular-validation"
