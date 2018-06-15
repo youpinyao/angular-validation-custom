@@ -1,6 +1,6 @@
 {
   "name": "angular-validation-custom",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Client-side Validation for AngularJS",
   "fixed": [
     "(改了form 的作用域，如果在ng-if 使用，会把form赋值到parent)",
@@ -61,7 +61,6 @@
     "time-grunt": "~1.4.0"
   },
   "dependencies": {
-    "webpack": "^1.13.0"
   },
   "directories": {
     "test": "test"
